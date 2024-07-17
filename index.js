@@ -37,8 +37,7 @@ app.post('/signup', async (req, res) => {
     }
   
     try {
-      // Hash the password
-      const saltRounds = 10;
+         const saltRounds = 10;
       const hashedPassword = await bcrypt.hash(password, saltRounds);
   
       const database = client.db('login-guvi');
@@ -65,19 +64,16 @@ app.post('/signup', async (req, res) => {
       const database = client.db('login-guvi');
       const collection = database.collection('userData');
   
-      // Find the user by emailId
       const user = await collection.findOne({ _id: emailId });
       if (!user) {
         return res.status(404).send('User not found');
       }
   
-      // Compare hashed password
       const passwordMatch = await bcrypt.compare(password, user.password);
       if (!passwordMatch) {
         return res.status(401).send('Invalid password');
       }
   
-      // Generate JWT token
       const token = jwt.sign({ emailId: user._id }, 'your_secret_key', { expiresIn: '1h' });
   
       res.status(200).send({msg:"Login Successful",token:token,emailId});
@@ -93,7 +89,6 @@ app.post('/signup', async (req, res) => {
       const database = client.db('login-guvi');
       const collection = database.collection('userData');
   
-      // Find the user by emailId
       const user = await collection.findOne({ _id: emailId });
       if (!user) {
         return res.status(404).send('User not found');
@@ -112,7 +107,6 @@ app.post('/signup', async (req, res) => {
     }
   });
   
-  // API endpoint to update user data
   app.put('/user-data', async (req, res) => {
        const { name, age, mobile, dob, gender,emailId } = req.body;
   
@@ -120,7 +114,6 @@ app.post('/signup', async (req, res) => {
       const database = client.db('login-guvi');
       const collection = database.collection('userData');
   
-      // Update user data if fields are provided
       const updateFields = {};
       if (name) updateFields.name = name;
       if (age) updateFields.age = age;
@@ -128,7 +121,6 @@ app.post('/signup', async (req, res) => {
       if (dob) updateFields.dob = dob;
       if (gender) updateFields.gender = gender;
   
-      // Perform update operation
       await collection.updateOne({ _id: emailId }, { $set: updateFields });
   
       res.status(200).send({msg:'User data updated successfully'});
